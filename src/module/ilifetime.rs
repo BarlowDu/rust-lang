@@ -14,3 +14,13 @@ impl irun::IRunner for Runner  {
         println!("lifetime run")
     }
 }
+/************************ */
+struct Node<'a>{
+    id:i32,
+    name:&'a str
+}
+
+fn getNode(id:i32,nm:&str)->Node{
+    //Node{id:id,name:nm}
+    Node{id:id,name:nm}
+}
