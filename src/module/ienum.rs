@@ -10,13 +10,13 @@ impl Runner{
 impl irun::IRunner for Runner{
     fn run(&self){
         println!("enum run");
-        testTypeAndValueMath();
+        test_type_and_value_match();
     }
 
 }
 
 
-fn testTypeAndValueMath(){
+fn test_type_and_value_match(){
     let i:i32=1;
     let re:Result<i32,i32>=Result::Ok(1);
     let r=Some(1);

@@ -10,13 +10,13 @@ impl Runner{
 
 impl irun::IRunner for Runner{
     fn run(&self){
-        testReference();
-        testBorrow();
-        testMutBorrow();
+        test_reference();
+        test_borrow();
+        test_mut_borrow();
     }
 }
 
-fn testReference(){
+fn test_reference(){
 
     let mut s=String::from("rust language");
     let s1=&s;
@@ -30,7 +30,7 @@ a将变成不可变(条件是b在a变更后被使用),只到b被释放
 当b引用了a,但a发生了变更,那么b可能将无法正确获取到数据.
 无同步机制,或者无需同步机制
  */
-fn testBorrow(){
+fn test_borrow(){
     let mut s=String::from("hello rust");
     {
         let s1=&s;
@@ -40,7 +40,7 @@ fn testBorrow(){
 
 
 }
-fn testMutBorrow(){
+fn test_mut_borrow(){
     let mut s=String::from("rust language");
     {
         let s2=&mut s;

@@ -20,7 +20,7 @@ struct Node<'a>{
     name:&'a str
 }
 
-fn getNode(id:i32,nm:&str)->Node{
+fn get_node(id:i32,nm:&str)->Node{
     //Node{id:id,name:nm}
     Node{id:id,name:nm}
 }
