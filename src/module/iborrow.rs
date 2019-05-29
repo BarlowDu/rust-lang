@@ -33,7 +33,7 @@ a将变成不可变(条件是b在a变更后被使用),只到b被释放
 fn test_borrow(){
     let mut s=String::from("hello rust");
     {
-        let s1=&s;
+        let _s1=&s;
         s.push_str("!");
         //println!("{}",s1);//如果s1被使用,那么上一句将不能编译通过(complie error)
     }
@@ -46,7 +46,7 @@ fn test_mut_borrow(){
         let s2=&mut s;
         //let s3=&s; //complie error
         let s4=&s2;//这一句之所有能够编译通过,是因为s2在这时可能变成了只读;  
-        let l=s4.len();  
+        let _l=s4.len();  
         s2.push_str(" !");
         println!("s2:{}",s2);
         println!("s:{}",s);

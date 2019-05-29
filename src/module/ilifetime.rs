@@ -1,4 +1,4 @@
-use super::super::irun;
+use crate::irun;
 //use irun;
 //extern crate irun;
 pub struct Runner{}
@@ -11,7 +11,8 @@ impl Runner{
 
 impl irun::IRunner for Runner  {
     fn run(&self){
-        println!("lifetime run")
+        println!("lifetime run");
+        let _node=get_node(1, "head");
     }
 }
 /************************ */

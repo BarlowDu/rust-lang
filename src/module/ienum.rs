@@ -1,4 +1,4 @@
-use super::super::irun;
+use crate::irun;
 
 pub struct Runner {}
 impl Runner{
@@ -17,14 +17,14 @@ impl irun::IRunner for Runner{
 
 
 fn test_type_and_value_match(){
-    let i:i32=1;
+    let _i:i32=1;
     let re:Result<i32,i32>=Result::Ok(1);
     let r=Some(1);
     
     match re{
         Ok(1)=>println!("result match 1"),
         Ok(t)=>println!("result match t"),
-        Err(t)=>println!("result match none")
+        Err(e)=>println!("result match none")
     }
 
     

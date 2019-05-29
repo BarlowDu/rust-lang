@@ -1,4 +1,4 @@
-use super::super::irun;
+use crate::irun;
 
 pub struct Runner{}
 impl Runner{
@@ -10,7 +10,7 @@ impl irun::IRunner for Runner {
     fn run(&self) {
         println!("string runner");
         let s=String::from("string runner");
-        let s1="string runner";
+        let _s1="string runner";
         println!("len:{}",first_word(&s));
         //println!("len:{}",first_word(&s1));
     }
