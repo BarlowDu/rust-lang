@@ -198,3 +198,69 @@ impl Draw for Button{
 
 在`Button`上的`width`,`height`和`label`字段会和其他组件不同,比如`TextField`可能会有`width`,`height`,`label`和`placeholder`字段.每一个我们希望能在屏幕上绘制的类型都会使用不同的代码来实现`Draw`trait的`draw`方法来定义如何绘制特定的类型,像这里的`Button`类型.除了实现的`Draw`trait之外,比如`Button`还可能有另一种包含按钮点击如何响应的方法的`impl`块.这类方法并不适用于像`TextField`这样的类型.
 
+一些库的使用者决定实现一个包含`width`,`height`,`options`字段的结构体`SelectBox`.并也为其实现了`Draw`trait,如*示例:8*
+```rust
+use gui::Draw;
+
+struct SelectBox{
+    width:u32,
+    height:u32,
+    options:Vec<String>,
+}
+
+impl Draw for SelectBox{
+    fn draw(&self){
+        //todo
+    }
+}
+```
+*示例:8*
+
+库使用者现在可以在他们的`main`函数中创建一个`Screen`实例.至此可以通过将`SelectBox`和`Button`放入`Box<T>`转变为trait对象来增加组件.接着可以调用`Screen`的`run`方法,它会调用每个组件的`draw`方法.如*示例:9*
+
+```rust
+use gui::{Screen,Button}
+fn main(){
+    let screen=Screen{
+        components=vec![
+            Box::new(SelectBox{
+                width:75,
+                height:10,
+                options:vec![
+                    String::from("Yes"),
+                    String::from("Maybe"),
+                    String::from("No")
+                ]
+            }),
+            Box::new(Button{
+                width:50,
+                height:10,
+                label:String::from("OK")
+            })
+        ]
+    };
+    screen.run();
+}
+```
+*示例:9*
+
+这个概念---只关心值所反映的信息而不是其具体类型---类似于动态类型语言中的鸭子类型(*duck typing*)的概念:如果它走起来像一只鸭子,叫起来像一只鸭子,那么它就是一只鸭子!,在*示例:5*中`Screen`上的`run`实现中,`run`并不需要知道各个组件的具体类型是什么.它不检查组件是`Button`或者`SelectBox`的实例.通过指定`Box<Draw>`作为`components`vector中值的类型,我们就定义了`Screen`需要可以在其上调用`draw`方法的值.
+
+使用trait对象和Rust类型系统来进行类似鸭子类型操作的优势是无需在运行时检查一个值是否实现了特定方法或者担心在调用时因为值没有实现方法而产生错误.如果值没有实现trait对象所需的trait则Rust不会编译这些代码.
+
+### trait对象执行动态分发
+
+当对泛型使用trait bound时编译器所进行单态化处理:编译器为每一个被泛型类型参数代替的具体类型生成了非泛型的函数和方法实现.单态化所产生的代码进行**静态分发**(*static dispatch*).静态分发发生于编译器在编译时就知晓调用了什么方法的时候.这与**动态分发**(*dynamic dispatch*)相对,这时编译器在编译时无法知晓调用了什么方法.在动态分发的情况下,编译器会生成在运行时确定调用了什么方法的代码.
+
+当使用trait对象的,Rust必须使用动态分发.编译器顽劣知晓所有可能用于 trait对象代码的类型,所以它也不知道应该调用哪个类型的哪个方法实现.为此,Rust在运行时使用trait对象中的指针来知晓需要调用哪个方法.动态分发也阻止编译器有选择的内联方法代码,这会相应的禁用一些优化.
+
+### Trait对象需要对象安全
+
+只有**对象安全**(*object safe*)的trait才可以组成trait对象.围绕所有使得trait对象安全的属性存在一些复杂的规则,不过在实践中,只涉及到两条规则.如果一个trait中所有的方法有如下属性时,则该trait对象安全的:
+* 返回值类型不为`Self`
+* 方法没有任何泛型类型参数
+
+`Self`关键字是我们要实现trait或方法的类型的别名.对象安全对于trait对象是必须的,因为一旦有了trait对象,就不再知晓实现该trait的具体类型是什么了.如果trait方法返回具体的`Self`类型,但是trait对象忘记了其真正的类型,那么方法不可能使用已经忘却的原始具体类型.同理对于泛型类型参数来说,当使用trait时其会放入具体的类型参数:此具体类型变成了实现该trait的类型的一部分.当使用trait对象时.其具体类型被抹去了,故无从得知放入泛型参数类型的类型是什么.
+
+
+
